@@ -22,8 +22,6 @@ or
 dotnet run -- --help
 ```
 
-cd
-
 ## Plans
 * Generate typescript classes and enums
 * Publish as dotnet tool
