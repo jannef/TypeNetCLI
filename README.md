@@ -9,6 +9,21 @@ TypeNetCLI aims to automate generating typescript definitions for you. Write dat
 
 I'm looking to create an easy, somewhat configurable, and perhaps extendable way of generating typescript classes with no dependencies and no hassle.
 
+## Running the project
+Clone the repository.
+
+``` cmd
+dotnet run -- -d "/path/to/your/published/Project.Name.dll" -n "Project.Name.Domain.Enums", "Project.Name.Domain.DataContracts" -o "/path/to/desired/output/directory"
+```
+
+or 
+
+``` cmd
+dotnet run -- --help
+```
+
+cd
+
 ## Plans
 * Generate typescript classes and enums
 * Publish as dotnet tool
