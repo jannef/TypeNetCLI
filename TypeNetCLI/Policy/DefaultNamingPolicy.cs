@@ -28,10 +28,5 @@ namespace TypeCLI.Policy
                 type.Type.Name)
                 .Replace('\\', '/');
         }
-
-        private static string RemoveInvalidChars(string filename)
-        {
-            return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
-        }
     }
 }

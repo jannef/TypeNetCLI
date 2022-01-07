@@ -171,7 +171,6 @@ namespace TypeCLI
             if (sb.Length > 0)
             {
                 var path = NamingPolicy.OutputLocation(this);
-                // Console.WriteLine($"Writing {path}");
                 File.WriteAllText(path, $"export enum {Type.Name} " +
                                         $"{{\n" +
                                         $"{sb}}}");
