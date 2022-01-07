@@ -7,16 +7,25 @@ namespace TypeCLI
     {
         public readonly INamingPolicy NamingPolicy;
         public readonly string[][] RootNamespaces;
+        public readonly Options Options;
+        public readonly EnhancedTypeResolver TypeResolver;
 
         public EnhancedTypeFactory(
+            Options options,
             INamingPolicy namingPolicy,
-            string[][] rootNamespaces)
+            string[][] rootNamespaces,
+            EnhancedTypeResolver typeResolver)
         {
             NamingPolicy = namingPolicy;
             RootNamespaces = rootNamespaces;
+            Options = options;
+            TypeResolver = typeResolver;
         }
 
-        public EnhancedType CreateEnhancedType(Type type) =>
-            new(type, RootNamespaces, NamingPolicy);
+        public EnhancedType CreateEnhancedType(Type type)
+        {
+
+            return new(type, RootNamespaces, NamingPolicy, Options, TypeResolver);
+        }
     }
 }

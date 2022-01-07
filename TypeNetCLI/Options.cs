@@ -12,7 +12,12 @@ namespace TypeCLI
         public IEnumerable<string> Namespaces { get; set; }
 
         [Option('o', "output", HelpText = "Output directory. Will not write the files if omitted.")]
-
         public string OutputDirectory { get; set; }
+
+        [Option(
+            "tab",
+            HelpText = "Tab style. Default is \"  \" (two spaces)",
+            Default = "  ")]
+        public string TabStyle { get; set; }
     }
 }

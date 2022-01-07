@@ -31,16 +31,18 @@ namespace TypeCLI
                         .ToArray();
 
                     var namingPolicy = new DefaultNamingPolicy(outputDirectory);
-                    var typeFactory = new EnhancedTypeFactory(namingPolicy, namespaces);
+                    var typeResolver = new EnhancedTypeResolver();
+                    var typeFactory = new EnhancedTypeFactory(o, namingPolicy, namespaces, typeResolver);
 
                     var filteredTypes = assembly.GetTypes()
                         .Where(x =>
                         {
-                            Console.WriteLine($"{x.FullName}");
                             return namespaces.Any(y => NamespaceHelper.IsInNamespace(x.Namespace, y));
                         })
                         .Select(x => typeFactory.CreateEnhancedType(x))
                         .ToHashSet();
+
+                    typeResolver.RegisterTypes(filteredTypes);
 
                     var numberOfTypes = filteredTypes.Count;
                     Console.WriteLine($"{numberOfTypes} types matched");

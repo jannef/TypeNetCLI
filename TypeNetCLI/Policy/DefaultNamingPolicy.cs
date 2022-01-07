@@ -20,6 +20,15 @@ namespace TypeCLI.Policy
             return Path.Join(outputDirectory, $"{type.Type.Name}.ts");
         }
 
+        public string ImportPath(EnhancedType type)
+        {
+            return Path.Join(
+                RootOutputDirectory,
+                Path.Join(type.TrimmedNamespaces),
+                type.Type.Name)
+                .Replace('\\', '/');
+        }
+
         private static string RemoveInvalidChars(string filename)
         {
             return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));

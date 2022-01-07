@@ -14,8 +14,6 @@ namespace TypeCLI
             string[] namespaces)
         {
             typeNamespace ??= string.Empty;
-            Console.WriteLine($"{string.Join('.', namespaces)}");
-
 
             var splitTypeNamespace = GetNameSpaces(typeNamespace);
 
