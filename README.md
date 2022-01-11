@@ -23,9 +23,8 @@ dotnet run -- --help
 ```
 
 ## Plans
-* Generate typescript classes and enums
 * Publish as dotnet tool
-* Upgrage to .NET 6
+* Configurable, and less optinionated
 
 ## Out of scope (for now)
 * Any code compilation, just read dll's produced with `dotnet publish`.
