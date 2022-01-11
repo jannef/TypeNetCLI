@@ -58,11 +58,11 @@ namespace TypeCLI
             foreach (var propertyInfo in Type.GetProperties())
             {
                 var propertyType = GetPropertyType(propertyInfo.PropertyType);
-                propertyStringBuilder.AppendLine($"{Options.TabStyle}{propertyInfo.Name}: {propertyType.typescripName}");
+                propertyStringBuilder.AppendLine($"{Options.TabStyle}{propertyInfo.Name}: {propertyType.TypescriptName}");
                 
-                if (propertyType.typeToImport != null)
+                if (propertyType?.Type != null)
                 {
-                    toImport.Add((propertyType.typeToImport, propertyType.importName));
+                    toImport.Add((propertyType.Type, propertyType.ImportName));
                 }
             }
 
@@ -71,7 +71,7 @@ namespace TypeCLI
                 var classStringBuilder = new StringBuilder();
 
                 foreach (var import in toImport)
-                {
+                {                    
                     classStringBuilder.AppendLine(
                         $"import {{ {import.typescriptName} }} from '{NamingPolicy.ImportPath(import.typeToImport)}'");
                 }
@@ -93,8 +93,7 @@ namespace TypeCLI
                 : typeName;
         }
 
-
-        private (string typescripName, EnhancedType typeToImport, string importName) GetPropertyType(Type propertyType)
+        private ImportReference GetPropertyType(Type propertyType)
         {
             try
             {
@@ -103,9 +102,13 @@ namespace TypeCLI
                 if (nullablePropertyType != null)
                 {
                     var nullableTypeName = ReplaceWithWellKnownType(nullablePropertyType.Name, out var wellKnownType);
-                    return ($"{nullablePropertyType} | null",
-                        wellKnownType ? null : TypeResolver.ResolveType(nullablePropertyType),
-                        nullableTypeName);
+                    
+                    return new()
+                    {
+                        TypescriptName = $"{nullablePropertyType} | null",
+                        Type = wellKnownType ? null : TypeResolver.ResolveType(nullablePropertyType),
+                        ImportName = nullableTypeName
+                    };
                 }
 
                 // Arrays
@@ -113,9 +116,13 @@ namespace TypeCLI
                 {
                     var arrayType = propertyType.GetElementType() ?? throw new TypeAccessException();
                     var arrayTypeName = ReplaceWithWellKnownType(arrayType.Name, out var wellKnownType);
-                    return ($"{arrayTypeName}[]",
-                        wellKnownType ? null : TypeResolver.ResolveType(arrayType),
-                        arrayTypeName);
+                    
+                    return new()
+                    {
+                        TypescriptName = $"{arrayTypeName}[]",
+                        Type = wellKnownType ? null : TypeResolver.ResolveType(arrayType),
+                        ImportName = arrayTypeName
+                    };
                 }
 
                 // Lists
@@ -123,9 +130,13 @@ namespace TypeCLI
                 {
                     var listType = propertyType.GetGenericArguments().First();
                     var listTypeName = ReplaceWithWellKnownType(listType.Name, out var wellKnownType);
-                    return ($"{listTypeName}[]",
-                        wellKnownType ? null : TypeResolver.ResolveType(listType),
-                        listTypeName);
+                    
+                    return new()
+                    {
+                        TypescriptName = $"{listTypeName}[]",
+                        Type = wellKnownType ? null : TypeResolver.ResolveType(listType),
+                        ImportName = listTypeName
+                    };
                 }
 
                 // Dictionaries -- does not support importable key yet :(
@@ -137,23 +148,32 @@ namespace TypeCLI
                     var key = ReplaceWithWellKnownType(keyType.Name, out var wellKnownKeyType);
                     var value = ReplaceWithWellKnownType(valueType.Name, out var wellKnownValueType);
 
-                    return ($"{{ [key:{key}]: {value} }}",
-                        wellKnownValueType ? null : TypeResolver.ResolveType(valueType),
-                        value);
+                    return new()
+                    {
+                        TypescriptName = $"{{ [key:{key}]: {value} }}",
+                        Type = wellKnownValueType ? null : TypeResolver.ResolveType(valueType),
+                        ImportName = value
+                    };
                 }
 
                 // Everything else
                 var typeName = ReplaceWithWellKnownType(propertyType.Name, out var wellKnownTyped);
-                return (typeName,
-                    wellKnownTyped ? null : TypeResolver.ResolveType(propertyType),
-                    typeName);
+
+                return new()
+                {
+                    TypescriptName = typeName,
+                    Type = wellKnownTyped ? null : TypeResolver.ResolveType(propertyType),
+                    ImportName = typeName
+                };
             }
             // type it any, everything craps out
-            catch (InvalidOperationException)
             catch (UnknownTypeException e)
             {
-                return ("any", null, null);
                 Console.WriteLine($"{e.Message} Falling back to 'any'.");
+                return new ()
+                {
+                    TypescriptName = ReplaceWithWellKnownType(propertyType.Name, out var _)
+                };
             }
         }
 
