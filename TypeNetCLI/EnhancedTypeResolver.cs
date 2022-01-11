@@ -15,7 +15,8 @@ namespace TypeCLI
                 throw new InvalidOperationException("Types not registered!");
             }
 
-            return EnhancedTypes.First(x => x.Type == type);
+            return EnhancedTypes.FirstOrDefault(x => x.Type == type)
+                ?? throw new UnknownTypeException(type);
         }
 
         public void RegisterTypes(HashSet<EnhancedType> types)

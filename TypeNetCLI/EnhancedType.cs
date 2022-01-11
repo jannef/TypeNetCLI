@@ -150,9 +150,10 @@ namespace TypeCLI
             }
             // type it any, everything craps out
             catch (InvalidOperationException)
+            catch (UnknownTypeException e)
             {
-                Console.WriteLine($"{propertyType.FullName} could not be resolved. Falling back to 'any'.");
                 return ("any", null, null);
+                Console.WriteLine($"{e.Message} Falling back to 'any'.");
             }
         }
 
