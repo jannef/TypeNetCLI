@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace TypeCLI
 {
@@ -6,7 +7,13 @@ namespace TypeCLI
     {
         public static string[] GetNameSpaces(string toSplit)
         {
-            return toSplit.Split('.');
+            var split = toSplit.Split('.');
+
+            if (split.Any(x => string.IsNullOrWhiteSpace(x))) {
+                throw new ArgumentException("Given namespace seems malformed. There was ");
+            }
+
+            return split;
         }
 
         public static bool IsInNamespace(
